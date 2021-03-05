@@ -1,25 +1,67 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react'
+// import Navbar from "./Components/Navbar";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+const THEMES = ['JE', 'VEUX', 'PARLER', 'ALLEMAND']
+
+
+class Block extends Component {
+
+    render() {
+
+        let style = {
+            backgroundColor: this.props.hexCode
+        }
+
+        return(
+            <div className={"Element_" + this.props.index} style={style} onClick={() => this.props.update(this.props.index)}>
+                <p>{this.props.text}</p>
+            </div>
+        )
+    }
+
 }
 
-export default App;
+
+class App extends Component {
+
+    constructor () {
+        super();
+        this.state = {
+            blocksQuant: THEMES.length,
+            elements: [],
+        };
+        for (let i=0; i < this.state.blocksQuant; i +=1){
+            this.state.elements.push({hexCode: this.generateColor(),
+                wordToShow: THEMES[i]})
+        }
+    }
+
+    generateColor() {
+        return '#' + Math.random().toString(16).substr(-6)
+    }
+
+    // arrow function to preserve this
+    updateColor =(index) => {
+        let elements = this.state.elements.slice();
+        const newColor = this.generateColor();
+        elements[index].hexCode = newColor;
+        this.setState({
+            elements: elements
+        })
+    }
+
+    render(){
+        return (
+            <div className="container">
+                {this.state.elements.map((element, index) => (
+                    <Block key={index} index={index} hexCode={element.hexCode} text={element.wordToShow}
+                           update={this.updateColor}/>
+                ))}
+            </div>
+        )
+    }
+}
+
+
+export default App
